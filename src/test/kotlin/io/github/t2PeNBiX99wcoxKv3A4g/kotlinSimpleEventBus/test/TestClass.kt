@@ -1,4 +1,4 @@
-package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus
+package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTest
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe
