@@ -2,9 +2,6 @@
 
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.ex
 
-import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.Utils
-import java.io.File
-import java.net.URL
 import java.security.MessageDigest
 
 fun String.toUTF8() = toByteArray(Charsets.ISO_8859_1).decodeToString()
@@ -41,14 +38,6 @@ fun String.middlePath(first: String, last: String) = firstPath(last).lastPath(fi
 fun String.middlePath(first: Char, last: Char) = firstPath(last).lastPath(first)
 fun String.middlePath(first: Char, last: String) = firstPath(last).lastPath(first)
 fun String.middlePath(first: String, last: Char) = firstPath(last).lastPath(first)
-
-fun String.asResource(work: (String) -> Unit) {
-    val content = asResourceUrl()?.readText() ?: return
-    work(content)
-}
-
-fun String.asResourceUrl(): URL? = Utils.resourceUrl(this)
-fun String.asResourceFile(): File? = Utils.resourceFile(this)
 
 fun String.md5() = hashString(this, "MD5")
 fun String.sha256() = hashString(this, "SHA-256")
