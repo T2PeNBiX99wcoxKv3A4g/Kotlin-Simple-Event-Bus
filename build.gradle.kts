@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus"
-version = "1.0-SNAPSHOT"
+version = project.property("version") as String
 
 repositories {
     mavenCentral()
