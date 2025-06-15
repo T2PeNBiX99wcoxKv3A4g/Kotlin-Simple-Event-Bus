@@ -1,6 +1,6 @@
 # Kotlin Simple Event Bus
 
-Simple event bus by using `MutableSharedFlow`
+Simple event bus by using `SharedFlow`
 
 `build.gradle.kts`
 ```kotlin
