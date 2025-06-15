@@ -3,7 +3,7 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus
 import java.io.File
 import java.net.URL
 
-object Utils {
+internal object Utils {
     fun resourceUrl(name: String): URL? = this.javaClass.getResource(name)
 
     fun resourceFile(name: String): File? {
