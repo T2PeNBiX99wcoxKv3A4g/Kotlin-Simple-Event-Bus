@@ -1,5 +1,25 @@
+@file:Suppress("unused", "UNUSED_PARAMETER")
+
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus
 
-import kotlin.reflect.KType
+class EventReturn<T : Any>(private val data: Map<EventReturnData, T?>) {
+    /**
+     * Get first value in return values
+     */
+    fun first() = data.entries.minByOrNull { it.key.order }!!
 
-data class EventReturn(val id: ULong, val returnValue: Any?, val returnType: KType, val order: Int)
+    /**
+     * Get last value in return values
+     */
+    fun last() = data.entries.maxByOrNull { it.key.order }!!
+
+    /**
+     * Performs the given [action] on each entry.
+     */
+    fun forEach(action: (Map.Entry<EventReturnData, T?>) -> Unit) = data::forEach
+
+    /**
+     * Get the map
+     */
+    fun asMap() = data
+}

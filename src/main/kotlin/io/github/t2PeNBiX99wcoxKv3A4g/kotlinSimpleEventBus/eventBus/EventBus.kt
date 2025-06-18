@@ -42,10 +42,15 @@ class EventBus(
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
     @JvmField val eventThrowableHandle: EventThrowableHandle
 ) {
+    companion object {
+        const val DEFAULT_FUNC_ORDER = 1000
+        const val DEFAULT_SUBSCRIBE_ORDER = 10000
+    }
+
     private val classFunctions = ConcurrentHashMap<Any, List<KFunction<*>>>()
     private val functions = CopyOnWriteArrayList<KFunction<*>>()
     private val _events = MutableSharedFlow<Event>(replay, extraBufferCapacity, onBufferOverflow)
-    private val _eventReturns = MutableSharedFlow<EventReturn>()
+    private val _eventReturns = MutableSharedFlow<EventReturnData>()
 
     constructor(timeoutMillis: Long = 3000L, eventThrowableHandle: EventThrowableHandle) : this(
         timeoutMillis, 0, 0, BufferOverflow.SUSPEND, eventThrowableHandle
@@ -71,8 +76,8 @@ class EventBus(
      * **You should never use this, will break an event return handle**
      */
     @Internal
-    suspend fun eventReturnsEmit(eventReturn: EventReturn) {
-        _eventReturns.emit(eventReturn)
+    suspend fun eventReturnsEmit(eventReturnData: EventReturnData) {
+        _eventReturns.emit(eventReturnData)
     }
 
     /**
@@ -102,10 +107,10 @@ class EventBus(
      */
     suspend inline fun <reified T : Any> publishSuspend(
         event: Event, timeoutMillis: Long, onError: EventThrowableHandle
-    ): Map<EventReturn, T?> {
+    ): EventReturn<T> {
         val id = event.id
         publishSuspend(event)
-        val retList = ConcurrentHashMap<EventReturn, T?>()
+        val retList = ConcurrentHashMap<EventReturnData, T?>()
         runCatching {
             withTimeout(timeoutMillis) {
                 getEventReturn(id).collect {
@@ -115,7 +120,7 @@ class EventBus(
                 }
             }
         }.getOrElse(onError::handle)
-        return retList.toMap()
+        return EventReturn(retList.toMap())
     }
 
     /**
@@ -153,9 +158,9 @@ class EventBus(
                                 val subscribe = f.findAnnotation<Subscribe>()
                                 val eventId = event.id
                                 val ret = f.call(it.key, event)
-                                val order = subscribe?.order ?: 1000
+                                val order = subscribe?.order ?: DEFAULT_FUNC_ORDER
 
-                                _eventReturns.emit(EventReturn(eventId, ret, f.returnType, order))
+                                _eventReturns.emit(EventReturnData(eventId, ret, order))
                             }
                     }
                 }.getOrElse(eventThrowableHandle::handle)
@@ -201,7 +206,7 @@ class EventBus(
                     val eventId = event.id
                     val ret = onEvent.call(event)
 
-                    eventReturnsEmit(EventReturn(eventId, ret, onEvent::call.returnType, 10000))
+                    eventReturnsEmit(EventReturnData(eventId, ret, DEFAULT_SUBSCRIBE_ORDER))
                 }
             }
         }.getOrElse(onError::handle)
