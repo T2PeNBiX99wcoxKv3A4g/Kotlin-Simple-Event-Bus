@@ -5,7 +5,11 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus
 /**
  * Event class used for event bus
  *
- * @sample io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest
+ * ```
+ * class SimpleEvent : Event() {
+ *     override fun isCancellable(): Boolean = true
+ * }
+ * ```
  */
 abstract class Event {
     private companion object {
