@@ -2,4 +2,6 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event
 
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Event
 
-class SimpleTest: Event()
+class SimpleEventTest : Event() {
+    override fun isCancellable(): Boolean = true
+}

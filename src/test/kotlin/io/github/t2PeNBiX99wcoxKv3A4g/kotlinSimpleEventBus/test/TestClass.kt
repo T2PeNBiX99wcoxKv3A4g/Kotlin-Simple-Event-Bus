@@ -1,6 +1,8 @@
+@file:Suppress("unused", "UNUSED_PARAMETER")
+
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
-import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTest
+import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe
 
 object TestClass {
@@ -8,8 +10,13 @@ object TestClass {
         eventBus.register(this)
     }
 
-    @Subscribe("SimpleTest")
-    fun onSimpleEvent(event: SimpleTest) {
-        
+    @Subscribe("SimpleEventTest")
+    fun onSimpleEvent(event: SimpleEventTest) {
+        // Do something
+    }
+
+    @Subscribe("SimpleEventTest", 900)
+    fun onSimpleEventEarlyThenOther(event: SimpleEventTest) {
+
     }
 }
