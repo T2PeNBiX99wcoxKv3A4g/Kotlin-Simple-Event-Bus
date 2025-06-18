@@ -29,3 +29,47 @@ dependencies {
     implementation 'com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.0.13'
 }
 ```
+
+## Sample
+
+```kotlin
+val eventBus = EventBus {
+    // Handle error
+}
+
+val eventBusWithTimeoutChange = EventBus(1000L) {
+    // Handle error
+}
+
+class SimpleEvent : Event() {
+    override fun isCancellable(): Boolean = true
+}
+
+class SimpleEvent2 : Event() {
+    override fun isCancellable(): Boolean = true
+}
+
+class SamplePush {
+    fun tick() {
+        eventBus.publish(SimpleEvent())
+        eventBusWithTimeoutChange.publish(SimpleEvent2())
+    }
+}
+
+class SampleHandle {
+    init {
+        eventBus.register(this)
+        eventBusWithTimeoutChange.register(this)
+    }
+
+    @Subscribe("SimpleEvent")
+    fun onEventTrigger() {
+        // Do something
+    }
+
+    @Subscribe("SimpleEvent2")
+    fun onEventTrigger2() {
+        // Do something
+    }
+}
+```
