@@ -2,9 +2,18 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus
 
 /**
  * Subscribe annotation
- * 
- * @sample io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test.TestClass
- * 
+ *
+ * ```
+ * class SimpleEvent : Event() {
+ *     override fun isCancellable(): Boolean = true
+ * }
+ *
+ * @Subscribe("SimpleEvent")
+ * fun onSimpleEvent(event: SimpleEventTest) {
+ *     // Do something
+ * }
+ * ```
+ *
  * @param event The name of **event class name**
  * @param order The order of event callback
  */

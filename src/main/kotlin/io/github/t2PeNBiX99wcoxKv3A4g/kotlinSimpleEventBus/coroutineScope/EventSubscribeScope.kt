@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-class EventSubscribeScope(private val id: ULong) : CoroutineScope {
+class EventSubscribeScope private constructor(private val id: ULong) : CoroutineScope {
     companion object {
         private var internalId: ULong = 0UL
 
