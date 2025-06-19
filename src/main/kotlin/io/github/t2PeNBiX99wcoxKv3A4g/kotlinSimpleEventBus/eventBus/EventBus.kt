@@ -19,7 +19,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
-// TODO: Handle java method
+// TODO: Handle java method, read cancel value
 /**
  * A [EventBus] with the given configuration parameters.
  *
