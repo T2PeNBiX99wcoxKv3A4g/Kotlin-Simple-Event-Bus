@@ -18,6 +18,16 @@ fun main() {
 
     runBlocking {
         eventBus.publish(SimpleEventTest())
+        val test = eventBus.publish<Boolean>(SimpleEventTest(), 1000L) {
+            
+        }
+        
+        test.forEach { 
+            it.key.order
+        }
+        
+        test.toMap()
+        
         delay(1000)
     }
 }
@@ -25,7 +35,7 @@ fun main() {
 private fun subscribeAll() {
     eventBus.subscribe(::testSubscribe)
     eventBus.subscribe(listOf(::testSubscribe))
-    eventBus.subscribe<SimpleEventTest> { 
+    eventBus.subscribe<SimpleEventTest> {
         // Do something
     }
 }

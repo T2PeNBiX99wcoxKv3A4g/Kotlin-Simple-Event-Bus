@@ -19,7 +19,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
-// TODO: Handle java method, read cancel value
+// TODO: Handle java method
 /**
  * A [EventBus] with the given configuration parameters.
  *
@@ -125,6 +125,10 @@ class EventBus(
 
     /**
      * Publish [event] to event bus
+     * 
+     * ```
+     * eventBus.publish(SampleEvent())
+     * ```
      *
      * @param event The custom event
      */
@@ -134,6 +138,12 @@ class EventBus(
 
     /**
      * Publish [event] to event bus and waiting return value
+     * 
+     * ```
+     * val retList = eventBus.publish<Boolean>(SampleEvent(), 5000L) {
+     *      // Error Handle
+     * }
+     * ```
      *
      * @param T Return type
      * @param event The custom event

@@ -15,7 +15,7 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus
  * ```
  *
  * @param event The name of **event class name**
- * @param order The order of event callback
+ * @param order The order of event callback, default value is **1000**. Low value will be earlier than other
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
