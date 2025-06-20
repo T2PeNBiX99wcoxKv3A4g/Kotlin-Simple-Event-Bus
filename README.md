@@ -41,18 +41,28 @@ val eventBusWithTimeoutChange = EventBus(1000L) {
     // Handle error
 }
 
-class SimpleEvent : Event() {
-    override fun isCancellable(): Boolean = true
-}
+class SimpleEvent : Event()
 
-class SimpleEvent2 : Event() {
-    override fun isCancellable(): Boolean = true
-}
+class SimpleEvent2 : Event()
+
+class SimpleEvent3 : Event()
 
 class SamplePush {
     fun tick() {
         eventBus.publish(SimpleEvent())
         eventBusWithTimeoutChange.publish(SimpleEvent2())
+    }
+
+    fun someEvent() {
+        val ret = eventBus.publish<Boolean>(SimpleEvent3(), 400L) {
+            println("Error: $it")
+        }
+
+        ret.forEach {
+            println("entry: $it")
+        }
+
+        println("return size ${ret.size}")
     }
 }
 
@@ -62,13 +72,18 @@ class SampleHandle {
         eventBusWithTimeoutChange.register(this)
     }
 
-    @Subscribe("SimpleEvent")
-    fun onEventTrigger() {
+    @Subscribe
+    fun onEventTrigger(event: SimpleEvent) {
         // Do something
     }
 
-    @Subscribe("SimpleEvent2")
-    fun onEventTrigger2() {
+    @Subscribe
+    fun onEventTrigger2(event: SimpleEvent2) {
+        // Do something
+    }
+
+    @Subscribe
+    fun onEventTrigger3(event: SimpleEvent3) {
         // Do something
     }
 }
