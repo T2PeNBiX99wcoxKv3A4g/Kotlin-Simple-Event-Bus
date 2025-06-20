@@ -89,9 +89,7 @@ class EventBus(
      * **You should never use this, will break an event return handle**
      */
     @Internal
-    fun getEventReturn(id: ULong) = _eventReturns.filter {
-        it.id == id
-    }
+    fun getEventReturn(id: ULong) = _eventReturns.filter { it.id == id }
 
     /**
      * Publish [event] to event bus in suspend function
