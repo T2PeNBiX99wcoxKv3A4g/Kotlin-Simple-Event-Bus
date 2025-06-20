@@ -1,46 +1,57 @@
-@file:Suppress("UNUSED_PARAMETER")
-
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
+import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.coroutineScope.TestScope
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest
+import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTick
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.EventBus
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 val eventBus = EventBus {
-
+    println("Error ${it.localizedMessage} $it")
 }
 
 fun main() {
     TestClass
+    TestClass2
+    TestClass3()
+    Test()
     subscribeAll()
 
     runBlocking {
-        eventBus.publish(SimpleEventTest())
-        val test = eventBus.publish<Boolean>(SimpleEventTest(), 1000L) {
-            
+        TestScope.launch {
+            while (true) {
+                eventBus.publish(SimpleTick())
+                delay(1)
+            }
         }
-        
-        test.forEach { 
-            it.key.order
+
+        while (true) {
+            eventBus.publish(SimpleEventTest())
+            println("publish test")
+//            val test = eventBus.publish<Boolean>(SimpleEventTest(), 10000L) {
+//                println("Error: $it")
+//            }
+
+//            test.forEach {
+//                println("entry: $it")
+//            }
+
+            delay(3000)
         }
-        
-        test.toMap()
-        
-        delay(1000)
     }
 }
 
 private fun subscribeAll() {
     eventBus.subscribe(::testSubscribe)
-    eventBus.subscribe(listOf(::testSubscribe))
     eventBus.subscribe<SimpleEventTest> {
-        // Do something
+        println("subscribe<SimpleEventTest>")
     }
 }
 
-@Subscribe("SimpleEventTest")
+@Subscribe
 private fun testSubscribe(event: SimpleEventTest) {
-
+    println("testSubscribe $event")
 }

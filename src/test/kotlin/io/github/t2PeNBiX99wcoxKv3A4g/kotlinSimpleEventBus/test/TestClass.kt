@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UNUSED_PARAMETER")
+@file:Suppress("unused")
 
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
@@ -10,13 +10,13 @@ object TestClass {
         eventBus.register(this)
     }
 
-    @Subscribe("SimpleEventTest")
+    @Subscribe
     fun onSimpleEvent(event: SimpleEventTest) {
-        // Do something
+        println("$this onSimpleEvent $event")
     }
 
-    @Subscribe("SimpleEventTest", 900)
+    @Subscribe(900)
     fun onSimpleEventEarlyThenOther(event: SimpleEventTest) {
-
+        println("$this onSimpleEventEarlyThenOther $event")
     }
 }

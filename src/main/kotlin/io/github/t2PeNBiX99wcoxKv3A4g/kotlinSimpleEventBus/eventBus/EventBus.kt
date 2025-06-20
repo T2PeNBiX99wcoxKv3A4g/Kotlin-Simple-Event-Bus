@@ -14,12 +14,11 @@ import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaType
+import kotlin.reflect.typeOf
 
-// TODO: Handle java method
 /**
  * A [EventBus] with the given configuration parameters.
  *
@@ -47,13 +46,17 @@ class EventBus(
         const val DEFAULT_SUBSCRIBE_ORDER = 10000
     }
 
-    private val classFunctions = ConcurrentHashMap<Any, List<KFunction<*>>>()
+    private val classFunctions = ConcurrentHashMap<Any, List<FunctionInfo>>()
     private val functions = CopyOnWriteArrayList<KFunction<*>>()
     private val _events = MutableSharedFlow<Event>(replay, extraBufferCapacity, onBufferOverflow)
     private val _eventReturns = MutableSharedFlow<EventReturnData>()
 
     constructor(timeoutMillis: Long = 3000L, eventThrowableHandle: EventThrowableHandle) : this(
         timeoutMillis, 0, 0, BufferOverflow.SUSPEND, eventThrowableHandle
+    )
+
+    constructor(eventThrowableHandle: EventThrowableHandle) : this(
+        3000L, 0, 0, BufferOverflow.SUSPEND, eventThrowableHandle
     )
 
     /**
@@ -105,7 +108,8 @@ class EventBus(
      * @param timeoutMillis timeout time in milliseconds.
      * @param onError Error handle when error is happened
      */
-    suspend inline fun <reified T : Any> publishSuspend(
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <T : Any> publishSuspend(
         event: Event, timeoutMillis: Long, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
@@ -114,9 +118,7 @@ class EventBus(
         runCatching {
             withTimeout(timeoutMillis) {
                 getEventReturn(id).collect {
-                    if (it.returnValue is T) {
-                        retList[it] = it.returnValue
-                    }
+                    retList[it] = it.returnValue as T
                 }
             }
         }.getOrElse(onError::handle)
@@ -125,7 +127,7 @@ class EventBus(
 
     /**
      * Publish [event] to event bus
-     * 
+     *
      * ```
      * eventBus.publish(SampleEvent())
      * ```
@@ -138,7 +140,7 @@ class EventBus(
 
     /**
      * Publish [event] to event bus and waiting return value
-     * 
+     *
      * ```
      * val retList = eventBus.publish<Boolean>(SampleEvent(), 5000L) {
      *      // Error Handle
@@ -150,24 +152,22 @@ class EventBus(
      * @param timeoutMillis timeout time in milliseconds.
      * @param onError Error handle when error is happened
      */
-    inline fun <reified T : Any> publish(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
+    fun <T : Any> publish(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
         runBlocking(EventPushScope.coroutineContext) { publishSuspend<T>(event, timeoutMillis, onError) }
 
-    private fun <T : Event> call(event: T) {
-        val name = event::class.simpleName
-
+    private inline fun <reified T : Event> call(event: T) {
         classFunctions.forEach {
             val eventScope = EventCollectScope(it.key::class.simpleName!!)
 
             eventScope.launch(SupervisorJob()) {
                 runCatching {
                     withTimeout(timeoutMillis) {
-                        it.value.filter { a -> a.findAnnotation<Subscribe>()?.event == name }
-                            .sortedBy { a -> a.findAnnotation<Subscribe>()?.order }.forEach { f ->
-                                f.isAccessible = true
-                                val subscribe = f.findAnnotation<Subscribe>()
+                        it.value.filter { a -> if (a.func.parameters.size > 1) a.func.parameters[1].type.javaType.typeName == event::class.qualifiedName else a.func.parameters[0].type.javaType.typeName == event::class.qualifiedName }
+                            .sortedBy { a -> a.func.findAnnotation<Subscribe>()?.order }.forEach { f ->
+                                f.func.isAccessible = true
+                                val subscribe = f.func.findAnnotation<Subscribe>()
                                 val eventId = event.id
-                                val ret = f.call(it.key, event)
+                                val ret = if (f.isStatic) f.func.call(event) else f.func.call(it.key, event)
                                 val order = subscribe?.order ?: DEFAULT_FUNC_ORDER
 
                                 _eventReturns.emit(EventReturnData(eventId, ret, order))
@@ -176,7 +176,7 @@ class EventBus(
                 }.getOrElse(eventThrowableHandle::handle)
             }
         }
-        functions.filter { it.findAnnotation<Subscribe>()?.event == name }
+        functions.filter { if (it.parameters.size > 1) it.parameters[1].type.javaType.typeName == event::class.qualifiedName else it.parameters[0].type.javaType.typeName == event::class.qualifiedName }
             .sortedBy { a -> a.findAnnotation<Subscribe>()?.order }.forEach {
                 val eventScope = EventCollectScope("Function(${it.name})")
 
@@ -206,20 +206,21 @@ class EventBus(
      * @param onEvent Event handle when trigger
      * @param onError Error handle when error is happened
      */
+    // TODO: Add java version
     inline fun <reified T : Event> subscribe(
         onEvent: EventHandle<T>, onError: EventThrowableHandle
     ) = EventSubscribeScope.create().launch(SupervisorJob()) {
-        runCatching {
-            withTimeout(timeoutMillis) {
-                events.filterIsInstance<T>().collect { event ->
+        events.filterIsInstance<T>().collect { event ->
+            runCatching {
+                withTimeout(timeoutMillis) {
                     coroutineContext.ensureActive()
                     val eventId = event.id
                     val ret = onEvent.call(event)
 
                     eventReturnsEmit(EventReturnData(eventId, ret, DEFAULT_SUBSCRIBE_ORDER))
                 }
-            }
-        }.getOrElse(onError::handle)
+            }.getOrElse(onError::handle)
+        }
     }
 
     /**
@@ -247,8 +248,9 @@ class EventBus(
      * @param func any function with annotation [Subscribe]
      * @throws EventBusAnnotationException on function don't have annotation [Subscribe]
      */
+    // TODO: Handle java method
     fun subscribe(func: KFunction<*>) {
-        if (!func.hasAnnotation<Subscribe>()) throw EventBusAnnotationException(func.name)
+        if (!func.functionCheck()) return
         functions.add(func)
     }
 
@@ -261,7 +263,7 @@ class EventBus(
      *
      * @param funcs any function list with annotation [Subscribe]
      */
-    fun subscribe(funcs: List<KFunction<*>>) = funcs.filter { it.hasAnnotation<Subscribe>() }.forEach { subscribe(it) }
+    fun subscribe(funcs: List<KFunction<*>>) = funcs.filter { it.functionCheck() }.forEach { subscribe(it) }
 
     /**
      * Unsubscribe handle function form event bus
@@ -270,7 +272,7 @@ class EventBus(
      * @throws EventBusAnnotationException on function don't have annotation [Subscribe]
      */
     fun unsubscribe(func: KFunction<*>) {
-        if (!func.hasAnnotation<Subscribe>()) throw EventBusAnnotationException(func.name)
+        if (!func.functionCheck()) return
         if (!functions.contains(func)) return
         functions.remove(func)
     }
@@ -300,11 +302,16 @@ class EventBus(
      */
     fun <T : Any> register(clazz: T) {
         EventPushScope.launch {
-            val functions = mutableListOf<KFunction<*>>()
+            val functions = mutableListOf<FunctionInfo>()
 
             clazz::class.declaredMemberFunctions.forEach {
-                if (!it.hasAnnotation<Subscribe>()) return@forEach
-                functions.add(it)
+                if (!it.functionCheck()) return@forEach
+                functions.add(FunctionInfo(it, false))
+            }
+
+            clazz::class.staticFunctions.forEach {
+                if (!it.functionCheck()) return@forEach
+                functions.add(FunctionInfo(it, true))
             }
 
             classFunctions[clazz] = functions
@@ -321,5 +328,16 @@ class EventBus(
         EventPushScope.launch {
             classFunctions.remove(clazz)
         }
+    }
+
+    private fun KFunction<*>.functionCheck(): Boolean {
+        if (!hasAnnotation<Subscribe>()) throw EventBusAnnotationException(name)
+        if (parameters.isEmpty() || parameters.size > 2) throw IllegalArgumentException("Too many parameter, only 1 parameter is allow. in $name function.")
+        val eventType = typeOf<Event>()
+        if (if (parameters.size > 1) !parameters[1].type.isSubtypeOf(eventType) else !parameters[0].type.isSubtypeOf(
+                eventType
+            )
+        ) throw IllegalArgumentException("First parameter of a @Subscribe method must be an event. in $name function.")
+        return true
     }
 }
