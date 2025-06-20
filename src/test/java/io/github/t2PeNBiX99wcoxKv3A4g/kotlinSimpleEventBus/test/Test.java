@@ -1,5 +1,6 @@
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test;
 
+import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventCancel;
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest;
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTick;
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.EventBus;
@@ -12,6 +13,9 @@ public class Test {
 
     public Test() {
         TestKt.getEventBus().register(this);
+        TestKt.getEventBus().publish(new SimpleEventTest());
+        var ret = TestKt.getEventBus().<Boolean>publishUnSafe(new SimpleEventCancel(), 500L, (throwable) -> {
+        });
     }
 
     @Subscribe

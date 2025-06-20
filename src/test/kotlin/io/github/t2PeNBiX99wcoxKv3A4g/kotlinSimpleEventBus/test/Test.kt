@@ -1,6 +1,7 @@
 package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.coroutineScope.TestScope
+import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventCancel
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTick
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.EventBus
@@ -30,15 +31,17 @@ fun main() {
 
         while (true) {
             eventBus.publish(SimpleEventTest())
-            println("publish test")
-//            val test = eventBus.publish<Boolean>(SimpleEventTest(), 10000L) {
-//                println("Error: $it")
-//            }
+            println("Send SimpleEventCancel")
+            val test = eventBus.publish<Boolean>(SimpleEventCancel(), 400L) {
+                println("Error: $it")
+            }
 
-//            test.forEach {
-//                println("entry: $it")
-//            }
+            test.forEach {
+                println("entry: $it")
+            }
 
+            println("test.size ${test.size}")
+            println("wait 3s")
             delay(3000)
         }
     }
@@ -46,6 +49,8 @@ fun main() {
 
 private fun subscribeAll() {
     eventBus.subscribe(::testSubscribe)
+    eventBus.subscribe(::testSubscribe2)
+    eventBus.subscribe(::testSubscribe3)
     eventBus.subscribe<SimpleEventTest> {
         println("subscribe<SimpleEventTest>")
     }
@@ -54,4 +59,16 @@ private fun subscribeAll() {
 @Subscribe
 private fun testSubscribe(event: SimpleEventTest) {
     println("testSubscribe $event")
+}
+
+@Subscribe
+private fun testSubscribe2(event: SimpleEventCancel): Boolean {
+    println("testSubscribe2 $event ${event.id}")
+    return true
+}
+
+@Subscribe
+private fun testSubscribe3(event: SimpleEventCancel): Int {
+    println("testSubscribe3 $event ${event.id}")
+    return 0
 }

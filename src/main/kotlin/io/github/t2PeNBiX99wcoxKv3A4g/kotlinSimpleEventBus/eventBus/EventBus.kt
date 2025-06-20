@@ -89,7 +89,9 @@ class EventBus(
      * **You should never use this, will break an event return handle**
      */
     @Internal
-    fun getEventReturn(id: ULong) = _eventReturns.filter { it.id == id }
+    fun getEventReturn(id: ULong) = _eventReturns.filter {
+        it.id == id
+    }
 
     /**
      * Publish [event] to event bus in suspend function
@@ -103,22 +105,49 @@ class EventBus(
     /**
      * Publish [event] to event bus and waiting return value in suspend function
      *
+     * Non-Type Security version of [publishSuspend] for java
+     *
      * @param T Return type
      * @param event The custom event
      * @param timeoutMillis timeout time in milliseconds.
      * @param onError Error handle when error is happened
      */
     @Suppress("UNCHECKED_CAST")
-    suspend fun <T : Any> publishSuspend(
+    suspend fun <T : Any> publishSuspendUnSafe(
         event: Event, timeoutMillis: Long, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
         publishSuspend(event)
         val retList = ConcurrentHashMap<EventReturnData, T?>()
         runCatching {
-            withTimeout(timeoutMillis) {
+            withTimeoutOrNull(timeoutMillis) {
                 getEventReturn(id).collect {
                     retList[it] = it.returnValue as T
+                }
+            }
+        }.getOrElse(onError::handle)
+        return EventReturn(retList.toMap())
+    }
+
+    /**
+     * Publish [event] to event bus and waiting return value in suspend function
+     *
+     * @param T Return type
+     * @param event The custom event
+     * @param timeoutMillis timeout time in milliseconds.
+     * @param onError Error handle when error is happened
+     */
+    suspend inline fun <reified T : Any> publishSuspend(
+        event: Event, timeoutMillis: Long, onError: EventThrowableHandle
+    ): EventReturn<T> {
+        val id = event.id
+        publishSuspend(event)
+        val retList = ConcurrentHashMap<EventReturnData, T?>()
+        runCatching {
+            withTimeoutOrNull(timeoutMillis) {
+                getEventReturn(id).collect {
+                    if (it.returnValue !is T) return@collect
+                    retList[it] = it.returnValue
                 }
             }
         }.getOrElse(onError::handle)
@@ -141,6 +170,8 @@ class EventBus(
     /**
      * Publish [event] to event bus and waiting return value
      *
+     * Non-Type Security version of [publish] for java
+     *
      * ```
      * val retList = eventBus.publish<Boolean>(SampleEvent(), 5000L) {
      *      // Error Handle
@@ -152,7 +183,24 @@ class EventBus(
      * @param timeoutMillis timeout time in milliseconds.
      * @param onError Error handle when error is happened
      */
-    fun <T : Any> publish(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
+    fun <T : Any> publishUnSafe(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
+        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeoutMillis, onError) }
+
+    /**
+     * Publish [event] to event bus and waiting return value
+     *
+     * ```
+     * val retList = eventBus.publish<Boolean>(SampleEvent(), 5000L) {
+     *      // Error Handle
+     * }
+     * ```
+     *
+     * @param T Return type
+     * @param event The custom event
+     * @param timeoutMillis timeout time in milliseconds.
+     * @param onError Error handle when error is happened
+     */
+    inline fun <reified T : Any> publish(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
         runBlocking(EventPushScope.coroutineContext) { publishSuspend<T>(event, timeoutMillis, onError) }
 
     private inline fun <reified T : Event> call(event: T) {
@@ -184,7 +232,12 @@ class EventBus(
                     runCatching {
                         withTimeout(timeoutMillis) {
                             it.isAccessible = true
-                            it.call(event)
+                            val subscribe = it.findAnnotation<Subscribe>()
+                            val eventId = event.id
+                            val ret = it.call(event)
+                            val order = subscribe?.order ?: DEFAULT_FUNC_ORDER
+
+                            _eventReturns.emit(EventReturnData(eventId, ret, order))
                         }
                     }.getOrElse(eventThrowableHandle::handle)
                 }
