@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
 }
 
 group = "io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus"
