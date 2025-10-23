@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.3.4")
+    implementation("com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.3.5")
 }
 ```
 
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.3.4'
+    implementation 'com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.3.5'
 }
 ```
 
