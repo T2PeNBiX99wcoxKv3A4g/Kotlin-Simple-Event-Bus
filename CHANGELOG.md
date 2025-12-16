@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.7](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.6..v0.3.7) - 2025-12-16
+
+### Action
+
+- Update version in `gradle.properties` - ([fc364b6](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/fc364b69ce9aff14b81056beb05dd0e59e856fa3))
+
+### Build
+
+- *(deps)* Bump jvm from 2.2.21 to 2.3.0 - ([b19a2ae](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/b19a2aecb3e64d2ba1f46d0aa8cb11aeac30fcfd))
+
+
 ## [0.3.6](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.5..v0.3.6) - 2025-10-23
 
 ### 🐛 Bug Fixes
