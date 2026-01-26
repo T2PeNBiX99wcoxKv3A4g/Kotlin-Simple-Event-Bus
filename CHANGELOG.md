@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.8](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.7..v0.3.8) - 2026-01-26
+
+### Action
+
+- Update version in `gradle.properties` - ([2219412](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/2219412823f27f4520426fa21c9791772b5f3646))
+
+### Build
+
+- *(deps)* Bump gradle-wrapper from 8.14.1 to 9.3.0 - ([4c79d1c](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/4c79d1cf7d5a21630f3082e0cd98c09555829d28))
+
+
 ## [0.3.7](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.6..v0.3.7) - 2025-12-16
 
 ### Action
