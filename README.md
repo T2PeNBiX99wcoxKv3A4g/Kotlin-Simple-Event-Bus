@@ -6,14 +6,13 @@ Simple event bus by using `SharedFlow`
 
 ```kotlin
 repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://jitpack.io")
+    maven("https://t2penbix99wcoxkv3a4g.github.io/Kotlin-Simple-Event-Bus/") {
+        name = "Kotlin Simple Event Bus"
     }
 }
 
 dependencies {
-    implementation("com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.4.1")
+    implementation("io.github.ykysnk:kotlin-simple-event-bus:0.4.1")
 }
 ```
 
@@ -23,12 +22,13 @@ dependencies {
 repositories {
     mavenCentral()
     maven {
-        url = 'https://jitpack.io'
+        url = 'https://t2penbix99wcoxkv3a4g.github.io/Kotlin-Simple-Event-Bus/'
+        name = 'Kotlin Simple Event Bus'
     }
 }
 
 dependencies {
-    implementation 'com.github.t2PeNBiX99wcoxKv3A4g:kotlin-simple-event-bus:0.4.1'
+    implementation 'io.github.ykysnk:kotlin-simple-event-bus:0.4.1'
 }
 ```
 
@@ -39,7 +39,7 @@ val eventBus = EventBus {
     // Handle error
 }
 
-val eventBusWithTimeoutChange = EventBus(1000L) {
+val eventBusWithTimeoutChange = EventBus(1.seconds) {
     // Handle error
 }
 
@@ -56,7 +56,7 @@ class SamplePush {
     }
 
     fun someEvent() {
-        val ret = eventBus.publish<Boolean>(SimpleEvent3(), 400L) {
+        val ret = eventBus.publish<Boolean>(SimpleEvent3(), 400.milliseconds) {
             println("Error: $it")
         }
 
