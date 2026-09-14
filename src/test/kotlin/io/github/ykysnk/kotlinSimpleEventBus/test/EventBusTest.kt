@@ -104,7 +104,7 @@ class EventBusTest {
         val bus = EventBus { it.printStackTrace() }
         val listener = TestUnregisterListener()
         bus.register(listener)
-        
+
         // Wait until async registration completes
         var registered = false
         for (i in 1..50) {

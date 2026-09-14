@@ -15,7 +15,10 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.full.*
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.typeOf
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
@@ -87,7 +90,11 @@ class EventBus(
     private val classFunctions = ConcurrentHashMap<Any, List<FunctionInfo>>()
     private val functions = CopyOnWriteArrayList<FunctionInfo>()
     private val _events = MutableSharedFlow<Event>(replay, extraBufferCapacity, onBufferOverflow)
-    private val _eventReturns = MutableSharedFlow<EventReturnData>(replay = 64, extraBufferCapacity = 64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _eventReturns = MutableSharedFlow<EventReturnData>(
+        replay = 64,
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     constructor(timeout: Duration = 3.seconds, eventThrowableHandle: EventThrowableHandle) : this(
         timeout,
@@ -299,11 +306,12 @@ class EventBus(
                         withTimeout(timeout) {
                             matching.forEach { f ->
                                 val eventId = event.id
-                                val ret = if (f.isStatic || f.func.parameters.none { p -> p.kind == KParameter.Kind.INSTANCE }) {
-                                    f.func.call(event)
-                                } else {
-                                    f.func.call(entry.key, event)
-                                }
+                                val ret =
+                                    if (f.isStatic || f.func.parameters.none { p -> p.kind == KParameter.Kind.INSTANCE }) {
+                                        f.func.call(event)
+                                    } else {
+                                        f.func.call(entry.key, event)
+                                    }
                                 val order = f.order
                                 _eventReturns.emit(EventReturnData(eventId, ret, order))
                             }
@@ -387,9 +395,7 @@ class EventBus(
      * @throws EventBusAnnotationException on function don't have annotation [Subscribe]
      */
     fun subscribe(func: KFunction<*>) {
-        if (!func.hasAnnotation<Subscribe>()) {
-            throw EventBusAnnotationException(func.name)
-        }
+        if (!func.hasAnnotation<Subscribe>()) throw EventBusAnnotationException(func.name)
         if (!func.functionCheck()) return
         val isStatic = func.parameters.none { it.kind == KParameter.Kind.INSTANCE }
         val funcInfo = FunctionInfo(func, isStatic)
