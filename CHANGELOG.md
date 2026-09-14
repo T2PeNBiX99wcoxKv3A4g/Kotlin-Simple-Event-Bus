@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.4.0](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.21..v0.4.0) - 2026-09-14
+
+### ⛰️  Features
+
+- Update package structure to use `io.github.ykysnk` namespace - ([84e7bba](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/84e7bba20b830228704778ab98679490e5df2505))
+
+### 🐛 Bug Fixes
+
+- *(workflows)* Refactor release workflows and clean up unused file - ([5971bef](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/5971beff79cbba47d4f40e26e98b9285ee4ca273))
+- *(workflows)* Enhance Dependabot auto-merge workflow - ([2b63695](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/2b636959ce464f9ce359a1112f519548778f6dbb))
+
+### 🚜 Refactor
+
+- *(EventBus)* Update `functionCheck` to return `Boolean` instead of throwing exception - ([327fa12](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/327fa1219ec46d353a25800bb93f01731b924880))
+- *(EventBus)* Add Java interop methods and improve duration consistency - ([f947504](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/f94750472985a33df4783e15af106ef86d081ba0))
+- *(EventBus)* Add overload for `publishUnSafe` with `timeout` as `Long` - ([949b58b](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/949b58bed3820db525d09752bd75b5b8308cf607))
+- *(EventBus)* Replace `timeoutMillis` with `Duration` for improved readability and consistency - ([ad88914](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/ad88914d2aeeac77fa0da969694d1885e695a06c))
+- *(EventBus, scopes)* Tidy imports and reformat code for improved readability - ([9521268](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/9521268c7638ec18b154a5e98ea07502eee10079))
+- *(extensions)* Rename package for `ClassExtensions` file - ([bc39ce0](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/bc39ce0c4463beda5a63444750690fa6202ec81e))
+- *(scopes)* Replace `Job` with `SupervisorJob` for improved coroutine supervision and simplify scope launching by removing redundant `SupervisorJob` usage - ([2ccfadf](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/2ccfadfc8c49feb04aa8ad7a944e9a6e7b3efc1c))
+- *(tests)* Update `EventBus` usage to leverage `Duration` for timeout handling - ([4d21f5c](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/4d21f5c0ae9696634db1a6a374f9d6ee58988975))
+- *(tests)* Use `Duration` extensions for improved readability in delays - ([d0105c0](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/d0105c0d84ceebda4795beae59197582fd5ffc1d))
+- Optimize event bus concurrency, dispatch performance, and lifecycle management - ([ec242df](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/ec242df5c52104c864b14f9a934c632e99c32dfd))
+
+### 🧪 Testing
+
+- *(TestClass)* Add unit test placeholder method for `TestClass` - ([9cc0615](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/9cc0615a0006a2237005f42f4f0c2b603e551b05))
+
+### Action
+
+- Update version in `gradle.properties` - ([04179d9](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/04179d9abb7f31f95689eb6ac6ccf1a7666bd173))
+
+### Build
+
+- *(gradle)* Update build scripts for dynamic configuration and publishing support - ([0ffed29](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/0ffed2947cecc5dd034b4abf9db8c05fa0dcc0db))
+
+## New Contributors ❤️
+
+* @junie-agent made their first contribution
+
 ## [0.3.21](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.20..v0.3.21) - 2026-09-14
 
 ### Build
