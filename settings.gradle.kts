@@ -1,4 +1,13 @@
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    plugins {
+        kotlin("jvm") version providers.gradleProperty("jvm_version")
+        kotlin("plugin.serialization") version providers.gradleProperty("jvm_version")
+    }
 }
-rootProject.name = "KotlinSimpleEventBus"
+
+rootProject.name = "kotlin-simple-event-bus"

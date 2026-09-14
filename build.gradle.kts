@@ -1,9 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.4.20"
+    kotlin("jvm")
+    kotlin("plugin.serialization")
+    `maven-publish`
 }
 
-group = "io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus"
-version = project.property("version") as String
+group = providers.gradleProperty("group").get()
+version = providers.gradleProperty("version").get()
 
 repositories {
     mavenCentral()
@@ -15,9 +17,19 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+kotlin {
+    jvmToolchain(providers.gradleProperty("jdk_version").get().toInt())
+}
+
 tasks.test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(22)
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPages"
+            url = layout.buildDirectory.dir("repo").get().asFile.toURI()
+        }
+    }
 }
