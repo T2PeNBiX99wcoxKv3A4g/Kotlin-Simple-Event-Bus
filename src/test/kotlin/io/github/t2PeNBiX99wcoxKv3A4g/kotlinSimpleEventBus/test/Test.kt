@@ -9,6 +9,8 @@ import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 val eventBus = EventBus {
     println("Error ${it.localizedMessage} $it")
@@ -25,14 +27,14 @@ fun main() {
         TestScope.launch {
             while (true) {
                 eventBus.publish(SimpleTick())
-                delay(1)
+                delay(1.milliseconds)
             }
         }
 
         while (true) {
             eventBus.publish(SimpleEventTest())
             println("Send SimpleEventCancel")
-            val test = eventBus.publish<Boolean>(SimpleEventCancel(), 400L) {
+            val test = eventBus.publish<Boolean>(SimpleEventCancel(), 400L.milliseconds) {
                 println("Error: $it")
             }
 
@@ -42,7 +44,7 @@ fun main() {
 
             println("test.size ${test.size}")
             println("wait 3s")
-            delay(3000)
+            delay(3.seconds)
         }
     }
 }
