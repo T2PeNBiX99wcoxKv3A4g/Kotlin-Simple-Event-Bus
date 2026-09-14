@@ -4,6 +4,7 @@ package io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.test
 
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleEventTest
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe
+import kotlin.test.Test
 
 object TestClass {
     init {
@@ -13,6 +14,11 @@ object TestClass {
     @Subscribe
     fun onSimpleEvent(event: SimpleEventTest) {
         println("$this onSimpleEvent $event")
+    }
+
+    @Test
+    fun test() {
+        println("test")
     }
 
     @Subscribe(900)
