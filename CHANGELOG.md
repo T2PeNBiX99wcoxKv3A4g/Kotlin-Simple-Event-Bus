@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.2](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.1..v0.4.2) - 2026-09-14
+
+### 🚜 Refactor
+
+- *(EventBus)* Remove nullable type from `retList` to simplify usage - ([8d094b2](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/8d094b2faf48ba920ea49d93da374bb6fdcd48ce))
+
+### 📚 Documentation
+
+- *(README)* Update repository URL and dependency coordinates to reflect new namespace and hosting location - ([bd8ce77](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/bd8ce779857180de4219bce83c2d6c3490e8bc82))
+
+### Action
+
+- Update version in `gradle.properties` - ([1207252](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/12072528a49d9a59e97533c25ee35f8f93b57d43))
+
+
 ## [0.4.1](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.0..v0.4.1) - 2026-09-14
 
 ### 🐛 Bug Fixes
