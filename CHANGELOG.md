@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.1](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.0..v0.4.1) - 2026-09-14
+
+### 🐛 Bug Fixes
+
+- Add Maven publication configuration to `publishing` block - ([051c621](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/051c6219881e27ee8d6d030231dfbd173d69f5de))
+
+### 📚 Documentation
+
+- *(README)* Add missing empty lines for code block clarity - ([967c087](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/967c087702476d83649e3996a875c4d519035517))
+
+### Action
+
+- Update version in `gradle.properties` - ([5ee0b8b](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/5ee0b8b5a9e94d80729680089bb5e2e41da9ccd8))
+
+
 ## [0.4.0](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.3.21..v0.4.0) - 2026-09-14
 
 ### ⛰️  Features
