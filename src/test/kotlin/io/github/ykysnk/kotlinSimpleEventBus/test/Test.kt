@@ -1,0 +1,76 @@
+package io.github.ykysnk.kotlinSimpleEventBus.test
+
+import io.github.ykysnk.kotlinSimpleEventBus.coroutineScope.TestScope
+import io.github.ykysnk.kotlinSimpleEventBus.event.SimpleEventCancel
+import io.github.ykysnk.kotlinSimpleEventBus.event.SimpleEventTest
+import io.github.ykysnk.kotlinSimpleEventBus.event.SimpleTick
+import io.github.ykysnk.kotlinSimpleEventBus.eventBus.EventBus
+import io.github.ykysnk.kotlinSimpleEventBus.eventBus.Subscribe
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+
+val eventBus = EventBus {
+    println("Error ${it.localizedMessage} $it")
+}
+
+fun main() {
+    TestClass
+    TestClass2
+    TestClass3()
+    Test()
+    subscribeAll()
+
+    runBlocking {
+        TestScope.launch {
+            while (true) {
+                eventBus.publish(SimpleTick())
+                delay(1.milliseconds)
+            }
+        }
+
+        while (true) {
+            eventBus.publish(SimpleEventTest())
+            println("Send SimpleEventCancel")
+            val test = eventBus.publish<Boolean>(SimpleEventCancel(), 400L.milliseconds) {
+                println("Error: $it")
+            }
+
+            test.forEach {
+                println("entry: $it")
+            }
+
+            println("test.size ${test.size}")
+            println("wait 3s")
+            delay(3.seconds)
+        }
+    }
+}
+
+private fun subscribeAll() {
+    eventBus.subscribe(::testSubscribe)
+    eventBus.subscribe(::testSubscribe2)
+    eventBus.subscribe(::testSubscribe3)
+    eventBus.subscribe<SimpleEventTest> {
+        println("subscribe<SimpleEventTest>")
+    }
+}
+
+@Subscribe
+private fun testSubscribe(event: SimpleEventTest) {
+    println("testSubscribe $event")
+}
+
+@Subscribe
+private fun testSubscribe2(event: SimpleEventCancel): Boolean {
+    println("testSubscribe2 $event ${event.id}")
+    return true
+}
+
+@Subscribe
+private fun testSubscribe3(event: SimpleEventCancel): Int {
+    println("testSubscribe3 $event ${event.id}")
+    return 0
+}
