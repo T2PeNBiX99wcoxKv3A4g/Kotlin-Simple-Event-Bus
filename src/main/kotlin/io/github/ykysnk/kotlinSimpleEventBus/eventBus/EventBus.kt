@@ -166,13 +166,13 @@ class EventBus(
         event: Event, timeout: Duration, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
-        val retList = ConcurrentHashMap<EventReturnData, T?>()
+        val retList = ConcurrentHashMap<EventReturnData, T>()
         runCatching {
             withTimeoutOrNull(timeout) {
                 coroutineScope {
                     val collectJob = launch {
                         getEventReturn(id).collect {
-                            retList[it] = it.returnValue as? T
+                            retList[it] = it.returnValue as? T ?: return@collect
                         }
                     }
                     publishSuspend(event)
@@ -196,7 +196,7 @@ class EventBus(
         event: Event, timeout: Duration, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
-        val retList = ConcurrentHashMap<EventReturnData, T?>()
+        val retList = ConcurrentHashMap<EventReturnData, T>()
         runCatching {
             withTimeoutOrNull(timeout) {
                 coroutineScope {
