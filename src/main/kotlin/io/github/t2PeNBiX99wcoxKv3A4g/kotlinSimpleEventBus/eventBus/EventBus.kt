@@ -76,7 +76,7 @@ class EventBus(
     val events = _events.asSharedFlow()
 
     init {
-        EventBusScope.launch(SupervisorJob()) {
+        EventBusScope.launch {
             events.collect {
                 call(it)
             }
@@ -171,7 +171,7 @@ class EventBus(
      *
      * @param event The custom event
      */
-    fun publish(event: Event) = EventPushScope.launch(SupervisorJob()) {
+    fun publish(event: Event) = EventPushScope.launch {
         publishSuspend(event)
     }
 
@@ -215,7 +215,7 @@ class EventBus(
         classFunctions.forEach {
             val eventScope = EventCollectScope(it.key::class.simpleName ?: "Unknown Name")
 
-            eventScope.launch(SupervisorJob()) {
+            eventScope.launch {
                 runCatching {
                     withTimeout(timeout) {
                         it.value.filter { a -> if (a.func.parameters.size > 1) a.func.parameters[1].type.javaType.typeName == event::class.qualifiedName else a.func.parameters[0].type.javaType.typeName == event::class.qualifiedName }
@@ -236,7 +236,7 @@ class EventBus(
             .sortedBy { a -> a.findAnnotation<Subscribe>()?.order }.forEach {
                 val eventScope = EventCollectScope("Function(${it.name})")
 
-                eventScope.launch(SupervisorJob()) {
+                eventScope.launch {
                     runCatching {
                         withTimeout(timeout) {
                             it.isAccessible = true
@@ -270,7 +270,7 @@ class EventBus(
     // TODO: Add java version
     inline fun <reified T : Event> subscribe(
         onEvent: EventHandle<T>, onError: EventThrowableHandle
-    ) = EventSubscribeScope.create().launch(SupervisorJob()) {
+    ) = EventSubscribeScope.create().launch {
         events.filterIsInstance<T>().collect { event ->
             runCatching {
                 withTimeout(timeout) {
