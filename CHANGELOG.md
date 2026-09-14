@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.3](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.2..v0.4.3) - 2026-09-14
+
+### Action
+
+- Update version in `gradle.properties` - ([5d096c9](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/5d096c9e5b04a9e8b0a0a23a2d49b788904b2f09))
+
+### Build
+
+- Target JVM 17 bytecode while compiling with JDK 25 toolchain - ([c3d65fe](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/c3d65fe8b1f81609bab952f25d0bf641fe9c14af))
+
+
 ## [0.4.2](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.1..v0.4.2) - 2026-09-14
 
 ### 🚜 Refactor
