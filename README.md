@@ -3,6 +3,7 @@
 Simple event bus by using `SharedFlow`
 
 `build.gradle.kts`
+
 ```kotlin
 repositories {
     mavenCentral()
@@ -17,6 +18,7 @@ dependencies {
 ```
 
 `build.gradle`
+
 ```groovy
 repositories {
     mavenCentral()
