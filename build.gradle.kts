@@ -26,6 +26,12 @@ tasks.test {
 }
 
 publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+
     repositories {
         maven {
             name = "GitHubPages"
