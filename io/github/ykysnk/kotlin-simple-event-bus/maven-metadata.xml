@@ -3,11 +3,11 @@
   <groupId>io.github.ykysnk</groupId>
   <artifactId>kotlin-simple-event-bus</artifactId>
   <versioning>
-    <latest>0.4.2</latest>
-    <release>0.4.2</release>
+    <latest>0.4.3</latest>
+    <release>0.4.3</release>
     <versions>
-      <version>0.4.2</version>
+      <version>0.4.3</version>
     </versions>
-    <lastUpdated>20260914153514</lastUpdated>
+    <lastUpdated>20260914155023</lastUpdated>
   </versioning>
 </metadata>
