@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -19,6 +21,13 @@ dependencies {
 
 kotlin {
     jvmToolchain(providers.gradleProperty("jdk_version").get().toInt())
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(providers.gradleProperty("jvm_target").get()))
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(providers.gradleProperty("jvm_target").map { it.toInt() })
 }
 
 tasks.test {
