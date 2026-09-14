@@ -18,11 +18,13 @@ import kotlin.reflect.full.*
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.typeOf
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A [EventBus] with the given configuration parameters.
  *
- * @param timeoutMillis timeout time in milliseconds.
+ * @param timeout timeout time
  * @param replay the number of values replayed to new subscribers (cannot be negative, defaults to zero).
  * @param extraBufferCapacity the number of values buffered in addition to `replay`.
  *   [emit][MutableSharedFlow.emit] does not suspend while there is a buffer space remaining (optional, cannot be negative, defaults to zero).
@@ -35,7 +37,7 @@ import kotlin.reflect.typeOf
  * @param eventThrowableHandle handle function on any error is happened.
  */
 class EventBus(
-    @JvmField val timeoutMillis: Long = 3000L,
+    val timeout: Duration = 3000L.milliseconds,
     replay: Int = 0,
     extraBufferCapacity: Int = 0,
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
@@ -51,12 +53,20 @@ class EventBus(
     private val _events = MutableSharedFlow<Event>(replay, extraBufferCapacity, onBufferOverflow)
     private val _eventReturns = MutableSharedFlow<EventReturnData>()
 
-    constructor(timeoutMillis: Long = 3000L, eventThrowableHandle: EventThrowableHandle) : this(
-        timeoutMillis, 0, 0, BufferOverflow.SUSPEND, eventThrowableHandle
+    constructor(timeout: Long = 3000L, eventThrowableHandle: EventThrowableHandle) : this(
+        timeout.milliseconds,
+        onBufferOverflow = BufferOverflow.SUSPEND,
+        eventThrowableHandle = eventThrowableHandle
+    )
+
+    constructor(timeout: Duration = 3000L.milliseconds, eventThrowableHandle: EventThrowableHandle) : this(
+        timeout,
+        onBufferOverflow = BufferOverflow.SUSPEND,
+        eventThrowableHandle = eventThrowableHandle
     )
 
     constructor(eventThrowableHandle: EventThrowableHandle) : this(
-        3000L, 0, 0, BufferOverflow.SUSPEND, eventThrowableHandle
+        3000L.milliseconds, onBufferOverflow = BufferOverflow.SUSPEND, eventThrowableHandle = eventThrowableHandle
     )
 
     /**
@@ -107,18 +117,18 @@ class EventBus(
      *
      * @param T Return type
      * @param event The custom event
-     * @param timeoutMillis timeout time in milliseconds.
+     * @param timeout timeout time
      * @param onError Error handle when error is happened
      */
     @Suppress("UNCHECKED_CAST")
     suspend fun <T : Any> publishSuspendUnSafe(
-        event: Event, timeoutMillis: Long, onError: EventThrowableHandle
+        event: Event, timeout: Duration, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
         publishSuspend(event)
-        val retList = ConcurrentHashMap<EventReturnData, T?>()
+        val retList = ConcurrentHashMap<EventReturnData, T>()
         runCatching {
-            withTimeoutOrNull(timeoutMillis) {
+            withTimeoutOrNull(timeout) {
                 getEventReturn(id).collect {
                     retList[it] = it.returnValue as T
                 }
@@ -132,17 +142,17 @@ class EventBus(
      *
      * @param T Return type
      * @param event The custom event
-     * @param timeoutMillis timeout time in milliseconds.
+     * @param timeout timeout time
      * @param onError Error handle when error is happened
      */
     suspend inline fun <reified T : Any> publishSuspend(
-        event: Event, timeoutMillis: Long, onError: EventThrowableHandle
+        event: Event, timeout: Duration, onError: EventThrowableHandle
     ): EventReturn<T> {
         val id = event.id
         publishSuspend(event)
-        val retList = ConcurrentHashMap<EventReturnData, T?>()
+        val retList = ConcurrentHashMap<EventReturnData, T>()
         runCatching {
-            withTimeoutOrNull(timeoutMillis) {
+            withTimeoutOrNull(timeout) {
                 getEventReturn(id).collect {
                     if (it.returnValue !is T) return@collect
                     retList[it] = it.returnValue
@@ -178,11 +188,11 @@ class EventBus(
      *
      * @param T Return type
      * @param event The custom event
-     * @param timeoutMillis timeout time in milliseconds.
+     * @param timeout timeout time
      * @param onError Error handle when error is happened
      */
-    fun <T : Any> publishUnSafe(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
-        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeoutMillis, onError) }
+    fun <T : Any> publishUnSafe(event: Event, timeout: Duration, onError: EventThrowableHandle) =
+        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeout, onError) }
 
     /**
      * Publish [event] to event bus and waiting return value
@@ -195,19 +205,19 @@ class EventBus(
      *
      * @param T Return type
      * @param event The custom event
-     * @param timeoutMillis timeout time in milliseconds.
+     * @param timeout timeout time
      * @param onError Error handle when error is happened
      */
-    inline fun <reified T : Any> publish(event: Event, timeoutMillis: Long, onError: EventThrowableHandle) =
-        runBlocking(EventPushScope.coroutineContext) { publishSuspend<T>(event, timeoutMillis, onError) }
+    inline fun <reified T : Any> publish(event: Event, timeout: Duration, onError: EventThrowableHandle) =
+        runBlocking(EventPushScope.coroutineContext) { publishSuspend<T>(event, timeout, onError) }
 
     private inline fun <reified T : Event> call(event: T) {
         classFunctions.forEach {
-            val eventScope = EventCollectScope(it.key::class.simpleName!!)
+            val eventScope = EventCollectScope(it.key::class.simpleName ?: "Unknown Name")
 
             eventScope.launch(SupervisorJob()) {
                 runCatching {
-                    withTimeout(timeoutMillis) {
+                    withTimeout(timeout) {
                         it.value.filter { a -> if (a.func.parameters.size > 1) a.func.parameters[1].type.javaType.typeName == event::class.qualifiedName else a.func.parameters[0].type.javaType.typeName == event::class.qualifiedName }
                             .sortedBy { a -> a.func.findAnnotation<Subscribe>()?.order }.forEach { f ->
                                 f.func.isAccessible = true
@@ -228,7 +238,7 @@ class EventBus(
 
                 eventScope.launch(SupervisorJob()) {
                     runCatching {
-                        withTimeout(timeoutMillis) {
+                        withTimeout(timeout) {
                             it.isAccessible = true
                             val subscribe = it.findAnnotation<Subscribe>()
                             val eventId = event.id
@@ -263,7 +273,7 @@ class EventBus(
     ) = EventSubscribeScope.create().launch(SupervisorJob()) {
         events.filterIsInstance<T>().collect { event ->
             runCatching {
-                withTimeout(timeoutMillis) {
+                withTimeout(timeout) {
                     coroutineContext.ensureActive()
                     val eventId = event.id
                     val ret = onEvent.call(event)
@@ -312,9 +322,9 @@ class EventBus(
      * eventBus.subscribe(listOf(::testSubscribe))
      * ```
      *
-     * @param funcs any function list with annotation [Subscribe]
+     * @param funcList any function list with annotation [Subscribe]
      */
-    fun subscribe(funcs: List<KFunction<*>>) = funcs.filter { it.functionCheck() }.forEach { subscribe(it) }
+    fun subscribe(funcList: List<KFunction<*>>) = funcList.filter { it.functionCheck() }.forEach { subscribe(it) }
 
     /**
      * Unsubscribe handle function form event bus
