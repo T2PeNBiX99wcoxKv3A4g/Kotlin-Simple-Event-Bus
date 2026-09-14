@@ -1,5 +1,7 @@
 package io.github.ykysnk.kotlinSimpleEventBus.eventBus
 
+import java.util.concurrent.atomic.AtomicLong
+
 /**
  * Event class used for event bus
  *
@@ -9,8 +11,8 @@ package io.github.ykysnk.kotlinSimpleEventBus.eventBus
  */
 abstract class Event {
     private companion object {
-        private var internalId: ULong = 0UL
+        private val internalId = AtomicLong(0L)
     }
 
-    val id = internalId++
+    val id: ULong = internalId.getAndIncrement().toULong()
 }
