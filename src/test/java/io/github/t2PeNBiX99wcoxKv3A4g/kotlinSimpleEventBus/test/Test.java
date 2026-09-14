@@ -6,15 +6,17 @@ import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.event.SimpleTick;
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.EventBus;
 import io.github.t2PeNBiX99wcoxKv3A4g.kotlinSimpleEventBus.eventBus.Subscribe;
 
+import java.time.Duration;
+
 public class Test {
     @SuppressWarnings("unused")
-    private static final EventBus eventBus = new EventBus(3000L, (throwable) -> {
+    private static final EventBus eventBus = EventBus.createFromJava(Duration.ofSeconds(3), (throwable) -> {
     });
 
     public Test() {
         TestKt.getEventBus().register(this);
         TestKt.getEventBus().publish(new SimpleEventTest());
-        var ret = TestKt.getEventBus().<Boolean>publishUnSafe(new SimpleEventCancel(), 500L, (throwable) -> {
+        var ret = TestKt.getEventBus().<Boolean>publishUnSafe(new SimpleEventCancel(), Duration.ofMillis(500L), (throwable) -> {
         });
     }
 
