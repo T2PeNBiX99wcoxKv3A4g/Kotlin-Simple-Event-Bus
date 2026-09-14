@@ -426,7 +426,7 @@ class EventBus(
     }
 
     private fun KFunction<*>.functionCheck(): Boolean {
-        if (!hasAnnotation<Subscribe>()) throw EventBusAnnotationException(name)
+        if (!hasAnnotation<Subscribe>()) return false
         if (parameters.isEmpty() || parameters.size > 2) throw IllegalArgumentException("Too many parameter, only 1 parameter is allow. in $name function.")
         val eventType = typeOf<Event>()
         if (if (parameters.size > 1) !parameters[1].type.isSubtypeOf(eventType) else !parameters[0].type.isSubtypeOf(
