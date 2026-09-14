@@ -194,6 +194,9 @@ class EventBus(
     fun <T : Any> publishUnSafe(event: Event, timeout: Duration, onError: EventThrowableHandle) =
         runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeout, onError) }
 
+    fun <T : Any> publishUnSafe(event: Event, timeout: Long, onError: EventThrowableHandle) =
+        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeout.milliseconds, onError) }
+
     /**
      * Publish [event] to event bus and waiting return value
      *
