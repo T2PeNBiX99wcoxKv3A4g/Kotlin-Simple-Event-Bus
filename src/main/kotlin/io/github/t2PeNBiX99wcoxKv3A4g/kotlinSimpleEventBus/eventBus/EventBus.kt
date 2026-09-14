@@ -19,7 +19,9 @@ import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.typeOf
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import java.time.Duration as JavaDuration
 
 /**
  * A [EventBus] with the given configuration parameters.
@@ -37,7 +39,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * @param eventThrowableHandle handle function on any error is happened.
  */
 class EventBus(
-    val timeout: Duration = 3000L.milliseconds,
+    val timeout: Duration = 3.seconds,
     replay: Int = 0,
     extraBufferCapacity: Int = 0,
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
@@ -46,6 +48,38 @@ class EventBus(
     companion object {
         const val DEFAULT_FUNC_ORDER = 1000
         const val DEFAULT_SUBSCRIBE_ORDER = 10000
+
+        @JvmStatic
+        fun createFromJava(
+            timeout: JavaDuration = JavaDuration.ofSeconds(3),
+            replay: Int = 0,
+            extraBufferCapacity: Int = 0,
+            onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+            eventThrowableHandle: EventThrowableHandle
+        ) = EventBus(
+            createDurationFromJava(timeout),
+            replay,
+            extraBufferCapacity,
+            onBufferOverflow,
+            eventThrowableHandle
+        )
+
+        @JvmStatic
+        fun createFromJava(
+            timeout: JavaDuration = JavaDuration.ofSeconds(3),
+            eventThrowableHandle: EventThrowableHandle
+        ) = EventBus(
+            createDurationFromJava(timeout),
+            onBufferOverflow = BufferOverflow.SUSPEND,
+            eventThrowableHandle = eventThrowableHandle
+        )
+
+        @JvmStatic
+        fun createFromJava(
+            eventThrowableHandle: EventThrowableHandle
+        ) = EventBus(3.seconds, onBufferOverflow = BufferOverflow.SUSPEND, eventThrowableHandle = eventThrowableHandle)
+
+        private fun createDurationFromJava(timeout: JavaDuration) = timeout.toNanos().nanoseconds
     }
 
     private val classFunctions = ConcurrentHashMap<Any, List<FunctionInfo>>()
@@ -53,20 +87,14 @@ class EventBus(
     private val _events = MutableSharedFlow<Event>(replay, extraBufferCapacity, onBufferOverflow)
     private val _eventReturns = MutableSharedFlow<EventReturnData>()
 
-    constructor(timeout: Long = 3000L, eventThrowableHandle: EventThrowableHandle) : this(
-        timeout.milliseconds,
-        onBufferOverflow = BufferOverflow.SUSPEND,
-        eventThrowableHandle = eventThrowableHandle
-    )
-
-    constructor(timeout: Duration = 3000L.milliseconds, eventThrowableHandle: EventThrowableHandle) : this(
+    constructor(timeout: Duration = 3.seconds, eventThrowableHandle: EventThrowableHandle) : this(
         timeout,
         onBufferOverflow = BufferOverflow.SUSPEND,
         eventThrowableHandle = eventThrowableHandle
     )
 
     constructor(eventThrowableHandle: EventThrowableHandle) : this(
-        3000L.milliseconds, onBufferOverflow = BufferOverflow.SUSPEND, eventThrowableHandle = eventThrowableHandle
+        3.seconds, onBufferOverflow = BufferOverflow.SUSPEND, eventThrowableHandle = eventThrowableHandle
     )
 
     /**
@@ -191,11 +219,14 @@ class EventBus(
      * @param timeout timeout time
      * @param onError Error handle when error is happened
      */
-    fun <T : Any> publishUnSafe(event: Event, timeout: Duration, onError: EventThrowableHandle) =
-        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeout, onError) }
-
-    fun <T : Any> publishUnSafe(event: Event, timeout: Long, onError: EventThrowableHandle) =
-        runBlocking(EventPushScope.coroutineContext) { publishSuspendUnSafe<T>(event, timeout.milliseconds, onError) }
+    fun <T : Any> publishUnSafe(event: Event, timeout: JavaDuration, onError: EventThrowableHandle) =
+        runBlocking(EventPushScope.coroutineContext) {
+            publishSuspendUnSafe<T>(
+                event,
+                createDurationFromJava(timeout),
+                onError
+            )
+        }
 
     /**
      * Publish [event] to event bus and waiting return value
