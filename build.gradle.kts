@@ -20,7 +20,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(libs.versions.jvm.version.get().toInt())
+    jvmToolchain(libs.versions.jvm.toolchain.get().toInt())
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget(libs.versions.jvm.target.get())
     }
