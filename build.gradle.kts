@@ -20,14 +20,14 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(providers.gradleProperty("jdk_version").get().toInt())
+    jvmToolchain(libs.versions.jvm.version.get().toInt())
     compilerOptions {
-        jvmTarget.set(JvmTarget.fromTarget(providers.gradleProperty("jvm_target").get()))
+        jvmTarget = JvmTarget.fromTarget(libs.versions.jvm.target.get())
     }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    options.release.set(providers.gradleProperty("jvm_target").map { it.toInt() })
+    options.release = libs.versions.jvm.target.get().toInt()
 }
 
 tasks.test {
