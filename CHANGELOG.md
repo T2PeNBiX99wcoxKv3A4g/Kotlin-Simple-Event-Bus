@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.4](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.3..v0.4.4) - 2026-09-15
+
+### 🚜 Refactor
+
+- *(build)* Use version catalog for JVM toolchain and target configuration - ([18286ab](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/18286ab0d91427507b0f1d1bc54d3fa5c5c817f8))
+
+### Action
+
+- Update version in `gradle.properties` - ([b58ee74](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/b58ee74c24e2632dc67910be1c6ec73f55a7dce0))
+
+### Build
+
+- *(gradle)* Migrate dependency and plugin management to version catalog (libs.versions.toml) - ([8612674](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/86126749ca60c71a5fffc0470f3f3181ac9a45ad))
+
+
 ## [0.4.3](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.2..v0.4.3) - 2026-09-14
 
 ### Action
