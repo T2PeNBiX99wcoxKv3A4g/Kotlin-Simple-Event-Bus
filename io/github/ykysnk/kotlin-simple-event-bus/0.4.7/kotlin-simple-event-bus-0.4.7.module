@@ -1,0 +1,102 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.ykysnk",
+    "module": "kotlin-simple-event-bus",
+    "version": "0.4.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.7.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kotlin-simple-event-bus-0.4.7.jar",
+          "url": "kotlin-simple-event-bus-0.4.7.jar",
+          "size": 130706,
+          "sha512": "25de4dfd84847235f06e22683e22d0f2f7ed77d2e16294e075f0b3db7a3f505b60a226b855352b83915f5c804fc7eb96b7a525a07a794ce57c77b52b68531c83",
+          "sha256": "974c0ada0bc67725c6aed611172912d677ea4764229e0de0f7e84d73aa6a2f6f",
+          "sha1": "8606273f026ecdee96cbe9044a3d964b81fd3b0a",
+          "md5": "c9c82145dec67189987a3f58ff898c42"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect"
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.20"
+          }
+        }
+      ],
+      "dependencyConstraints": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.4.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kotlin-simple-event-bus-0.4.7.jar",
+          "url": "kotlin-simple-event-bus-0.4.7.jar",
+          "size": 130706,
+          "sha512": "25de4dfd84847235f06e22683e22d0f2f7ed77d2e16294e075f0b3db7a3f505b60a226b855352b83915f5c804fc7eb96b7a525a07a794ce57c77b52b68531c83",
+          "sha256": "974c0ada0bc67725c6aed611172912d677ea4764229e0de0f7e84d73aa6a2f6f",
+          "sha1": "8606273f026ecdee96cbe9044a3d964b81fd3b0a",
+          "md5": "c9c82145dec67189987a3f58ff898c42"
+        }
+      ]
+    }
+  ]
+}
