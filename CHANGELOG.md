@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.8](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.7..v0.4.8) - 2026-09-16
+
+### Action
+
+- Update version in `gradle.properties` and update `CHANGELOG.md` - ([e15a3fd](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/e15a3fdef28452f9c3a4739516a4ac14fd62a66c))
+
+### Build
+
+- *(workflows)* Rename workflow to `Pre Release` for consistency - ([6c5ab62](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/6c5ab62e46216e0c85fa1ee4a91e78c677bb1eb4))
+
+
 ## [0.4.7](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.6..v0.4.7) - 2026-09-16
 
 ### Action
