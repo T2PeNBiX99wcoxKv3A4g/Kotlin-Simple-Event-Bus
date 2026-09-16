@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.6](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.5..v0.4.6) - 2026-09-16
+
+### ⚙️ Miscellaneous Tasks
+
+- *(workflows)* Simplify Dependabot auto-merge workflow configuration - ([44b8840](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/44b88401e8cbd9c7bb0ab45026838e44b0ede9d2))
+
+### Action
+
+- Update version in `gradle.properties` - ([448952e](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/448952edc0dd7b7d2c96ee27c84cb0ab400ed117))
+
+### Build
+
+- *(workflows)* Rename `build` job to `rebuild` in page rebuild workflow - ([31c4383](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/31c438371484cad54db0df643e3634d42d87747a))
+- *(workflows)* Add manual page rebuild workflow using shared configuration - ([7f3ed61](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/7f3ed61c821252918f1978de8d5f8bcb677ca76b))
+- *(workflows)* Streamline pre-release and release workflows using shared configuration - ([e1aae78](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/e1aae783508f1390fcf8f5032b00fd1c09eb4e42))
+
+
 ## [0.4.5](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.4..v0.4.5) - 2026-09-15
 
 ### 🚜 Refactor
