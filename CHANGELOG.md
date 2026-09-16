@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.7](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.6..v0.4.7) - 2026-09-16
+
+### Action
+
+- Update version in `gradle.properties` and update `CHANGELOG.md` - ([d949752](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/d94975293873cba6e86df5e9177c90cc1f84c901))
+
+### Build
+
+- *(workflows)* Rename workflow to `Rebuild Page` for clarity - ([df0ca8d](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/commit/df0ca8dafb59800f6aade1512dd2e3b110cf354a))
+
+
 ## [0.4.6](https://github.com/T2PeNBiX99wcoxKv3A4g/Kotlin-Simple-Event-Bus/compare/v0.4.5..v0.4.6) - 2026-09-16
 
 ### ⚙️ Miscellaneous Tasks
