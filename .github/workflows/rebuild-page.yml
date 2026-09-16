@@ -9,5 +9,5 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  rebuild:
     uses: T2PeNBiX99wcoxKv3A4g/Release-Workflows/.github/workflows/jvm_rebuild_maven_pages.yml@main
